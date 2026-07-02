@@ -24,8 +24,8 @@ jobs:
         git submodule init
         
         # 4. Ép các nhánh chạy theo đúng định dạng bạn mong muốn (Bỏ qua nhánh lỗi cũ)
-        git submodule set-branch --branch main submodules/base || git submodule set-branch --branch main src/base
-        git submodule set-branch --branch main submodules/libziparchive || git submodule set-branch --branch main src/libziparchive
+        #git submodule set-branch --branch main submodules/base || git submodule set-branch --branch main src/base
+        #git submodule set-branch --branch main submodules/libziparchive || git submodule set-branch --branch main src/libziparchive
         
         # 5. Kéo mã nguồn mới nhất bằng cách thêm tham số `--remote` để ép nhận theo tên branch thay vì Commit SHA-1 cũ
         git submodule update --init --recursive --remote --force --checkout
