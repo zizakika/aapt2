@@ -14,8 +14,21 @@ jobs:
     # Buộc Git đồng bộ submodules theo branch 'main' đã định nghĩa trong .gitmodules
     - name: Sync and Pull Latest AOSP Source (API 37)
       run: |
+        # 1. Ép Git cập nhật lại URL của tất cả submodules theo file .gitmodules mới nhất
+        git submodule sync --recursive
+        
+        # 2. Xóa toàn bộ cache cấu hình cũ của submodule để tránh bị ghim SHA-1 cũ
+        git submodule deinit -f . || true
+        
+        # 3. Khởi tạo lại cấu hình sạch
         git submodule init
-        git submodule update --init --recursive --remote --checkout
+        
+        # 4. Ép các nhánh chạy theo đúng định dạng bạn mong muốn (Bỏ qua nhánh lỗi cũ)
+        git submodule set-branch --branch main submodules/base || git submodule set-branch --branch main src/base
+        git submodule set-branch --branch main submodules/libziparchive || git submodule set-branch --branch main src/libziparchive
+        
+        # 5. Kéo mã nguồn mới nhất bằng cách thêm tham số `--remote` để ép nhận theo tên branch thay vì Commit SHA-1 cũ
+        git submodule update --init --recursive --remote --force --checkout
 
     - name: Install Dependencies
       run: |
