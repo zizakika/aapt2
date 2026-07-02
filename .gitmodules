@@ -62,6 +62,7 @@
 	shallow = true
 	path = submodules/libziparchive
 	url = https://android.googlesource.com/platform/system/libziparchive
+    branch = aml_ads_341826060
 [submodule "submodules/soong"]
 	shallow = true
 	path = submodules/soong
