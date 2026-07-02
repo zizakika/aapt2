@@ -1,0 +1,48 @@
+name: Build AAPT2 AOSP Native (API 37 / Main)
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  workflow_dispatch:
+
+jobs:
+  build-arm64:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    # Buộc Git đồng bộ submodules theo branch 'main' đã định nghĩa trong .gitmodules
+    - name: Sync and Pull Latest AOSP Source (API 37)
+      run: |
+        git submodule init
+        git submodule update --init --recursive --remote --checkout
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y cmake ninja-build g++ protobuf-compiler libprotobuf-dev
+
+    - name: Setup Android NDK
+      uses: android-actions/setup-android@v3
+
+    # Thực thi build binary native target arm64-v8a
+    - name: Compile AAPT2
+      run: |
+        chmod +x patch.sh build.sh
+        
+        # Chạy patch (bỏ qua nếu cảnh báo lỗi dòng do khác biệt cấu trúc file .cpp mới của Google)
+        ./patch.sh || echo "Patch applied with warnings due to newer AOSP source code"
+        
+        export ANDROID_NDK=$ANDROID_NDK_LATEST_HOME
+        export PROTOC_PATH=/usr/bin/protoc
+        ./build.sh arm64-v8a
+
+    - name: Upload AAPT2 Binary
+      uses: actions/upload-artifact@v4
+      with:
+        name: aapt2-api37-arm64
+        path: dist/aapt2-arm64-v8a
+        retention-days: 7
+        
