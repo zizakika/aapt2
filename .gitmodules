@@ -12,7 +12,6 @@
 	shallow = true
 	path = submodules/boringssl
 	url = https://android.googlesource.com/platform/external/boringssl
-	branch = master
 [submodule "submodules/incremental_delivery"]
 	shallow = true
 	path = submodules/incremental_delivery
